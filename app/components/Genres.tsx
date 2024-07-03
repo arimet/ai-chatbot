@@ -1,28 +1,39 @@
 'use client'
 
+const MOVIE_API_KEY = process.env.MOVIE_API_KEY
+
 import { useActions, useUIState } from 'ai/rsc'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 export default function Genres() {
   const { submitUserMessage } = useActions()
   const [_, setMessages] = useUIState()
 
-  const categories = [
-    { id: 1, name: 'Action', color: 'bg-[#FF69B4]' },
-    { id: 2, name: 'Adventure', color: 'bg-[#1E90FF]' },
-    { id: 3, name: 'Sport', color: 'bg-[#FFD700]' },
-    { id: 4, name: 'Bollywood', color: 'bg-[#6A5ACD]' },
-    { id: 5, name: 'Kids', color: 'bg-[#98FB98]' },
-    { id: 6, name: 'Musical', color: 'bg-[#FFA07A]' }
-  ]
+  const [categories, setCategories] = useState<{id: number, name: string}[]>([])
 
-  const handleGenreClick = async (genre: string) => {
-    console.log('Handle genre click', genre)
-    const { display } = await submitUserMessage(
-      `genreLookup ${genre}`
-    )
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const url = `https://api.themoviedb.org/3/genre/movie/list?language=en`
 
-    console.log('Display', display)
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${MOVIE_API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        const data = await response.json()
+        console.log('data', data)
+        setCategories(data.genres);
+      } catch (error) {
+        console.error('Failed to fetch categories', error)
+      }
+    }
+
+    fetchCategories()
+  }, [])
+  const handleGenreClick = async (genreId: number) => {
+    const display = await submitUserMessage(`genreLookup ${genreId}`)
 
     setMessages((messages: ReactNode[]) => [...messages, display])
   }
@@ -38,14 +49,16 @@ export default function Genres() {
             Select the genre you want to explore.
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {categories.map(category => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6">
+          {categories?.map(category => (
             <div
               key={category.id}
-              className={`rounded-lg p-6 ${category.color} transition-transform duration-300 ease-in-out hover:-translate-y-2 hover:shadow-lg`}
-              onClick={async () => {handleGenreClick(category.name)}}
+              className={`cursor-pointer shadow-lg rounded-lg p-6 transition-transform duration-300 ease-in-out hover:-translate-y-2 hover:shadow-lg`}
+              onClick={async () => {
+                handleGenreClick(category.id)
+              }}
             >
-              <h3 className="text-2xl font-bold text-primary-foreground">
+              <h3 className="text-2xl font-bold text-primary">
                 {category.name}
               </h3>
             </div>

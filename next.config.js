@@ -9,5 +9,8 @@ module.exports = {
         pathname: '**'
       }
     ]
-  }
+  },
+  env: {
+    MOVIE_API_KEY: process.env.MOVIE_API_KEY, // pulls from .env file
+  },
 }
