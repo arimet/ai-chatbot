@@ -1,9 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 const MOVIE_API_KEY = process.env.MOVIE_API_KEY
 
 import { useActions, useUIState } from 'ai/rsc'
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 interface Movie {
@@ -42,7 +42,7 @@ export default function MoviesByGenre({ genreId }: { genreId: number }) {
           }
         })
         const data = await response.json()
-        setMovies(data.genres)
+        setMovies(data.results)
       } catch (error) {
         console.error('Failed to fetch categories', error)
       }
@@ -58,8 +58,8 @@ export default function MoviesByGenre({ genreId }: { genreId: number }) {
           key={movie.id}
           className="relative overflow-hidden rounded-lg group"
         >
-          <Image
-            src={`https://image.tmdb.org/t/p/w220_and_h330_face/${movie.poster_path}`}
+          <img
+            src={`https://image.tmdb.org/t/p/w220_and_h330_face${movie.poster_path}`}
             alt="Movie Poster"
             width={400}
             height={600}
