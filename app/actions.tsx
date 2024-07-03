@@ -7,6 +7,8 @@ import MoviesByGenre from './components/MoviesByGenre'
 export async function submitUserMessage(input: string) {
   'use server'
 
+  console.log('submitUserMessage', input)
+
   const ui = await streamUI({
     model: openai('gpt-4o'),
     system: `\
@@ -14,7 +16,7 @@ export async function submitUserMessage(input: string) {
     You and the user can discuss movie options, and the user can adjust their movie selection, choose a showtime, or explore different genres in the UI.
     
     If the user wants to explore movies by genre, call \`show_genre_ui\` to show the list of genre movies.
-    If the user gives a genre id, call \`movie_lookup_by_genre_id_ui\` to show the details of the genre by an id.
+    If the user gives a genre id, call \`movie_lookup_by_genre_id\` to show movies list with this genre id.
     
     If the user wants to book tickets, or complete another task not supported by this demo, respond that you are a demo and cannot do that.
     

@@ -35,7 +35,9 @@ export default function Genres() {
     fetchCategories()
   }, [])
   const handleGenreClick = async (genreId: number) => {
-    const display = await submitUserMessage(`movieLookupByGenreId ${genreId}`)
+    const display = await submitUserMessage(
+      `show movies with genre id ${genreId}`
+    )
 
     console.log('handleGenreClick', display, genreId)
 
