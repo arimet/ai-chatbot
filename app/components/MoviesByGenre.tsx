@@ -4,7 +4,7 @@ const MOVIE_API_KEY = process.env.MOVIE_API_KEY
 
 import { useActions, useUIState } from 'ai/rsc'
 import Image from 'next/image'
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface Movie {
   adult: boolean
@@ -28,6 +28,7 @@ export default function MoviesByGenre({ genreId }: { genreId: number }) {
   const [_, setMessages] = useUIState()
 
   const [movies, setMovies] = useState<Movie[]>([])
+  console.log('movies', movies)
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -52,7 +53,7 @@ export default function MoviesByGenre({ genreId }: { genreId: number }) {
 
   return (
     <section className="grid grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {movies.map(movie => (
+      {movies?.map(movie => (
         <div
           key={movie.id}
           className="relative overflow-hidden rounded-lg group"

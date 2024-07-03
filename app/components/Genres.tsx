@@ -9,7 +9,9 @@ export default function Genres() {
   const { submitUserMessage } = useActions()
   const [_, setMessages] = useUIState()
 
-  const [categories, setCategories] = useState<{id: number, name: string}[]>([])
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>(
+    []
+  )
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -24,7 +26,7 @@ export default function Genres() {
         })
         const data = await response.json()
         console.log('data', data)
-        setCategories(data.genres);
+        setCategories(data.genres)
       } catch (error) {
         console.error('Failed to fetch categories', error)
       }
@@ -33,7 +35,9 @@ export default function Genres() {
     fetchCategories()
   }, [])
   const handleGenreClick = async (genreId: number) => {
-    const display = await submitUserMessage(`genreLookup ${genreId}`)
+    const display = await submitUserMessage(`movieLookupByGenreId ${genreId}`)
+
+    console.log('handleGenreClick', display, genreId)
 
     setMessages((messages: ReactNode[]) => [...messages, display])
   }
