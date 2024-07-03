@@ -3,11 +3,11 @@ import { createAI, streamUI } from 'ai/rsc'
 import { z } from 'zod'
 import Genres from './components/Genres'
 import MoviesByGenre from './components/MoviesByGenre'
+import { Message } from '@/lib/types'
+import { nanoid } from '@/lib/utils'
 
 export async function submitUserMessage(input: string) {
   'use server'
-
-  console.log('submitUserMessage', input)
 
   const ui = await streamUI({
     model: openai('gpt-4o'),
@@ -30,7 +30,6 @@ export async function submitUserMessage(input: string) {
           genres: z.array(z.string()).describe('The list of genres')
         }),
         generate: async function* () {
-          console.log('showGenre')
           return <Genres />
         }
       },
@@ -49,12 +48,23 @@ export async function submitUserMessage(input: string) {
     }
   })
 
-  return ui.value
+  return { display: ui.value, role: 'system' }
 }
 
-export const AI = createAI<any[], React.ReactNode[]>({
+export type AIState = {
+  chatId: string
+  messages: Message[]
+}
+
+export type UIState = {
+  id: string
+  display: React.ReactNode
+  role: 'system' | 'user' | 'tool'
+}[]
+
+export const AI = createAI<AIState, UIState>({
   initialUIState: [],
-  initialAIState: [],
+  initialAIState: { chatId: nanoid(), messages: [] },
   actions: {
     submitUserMessage
   }
